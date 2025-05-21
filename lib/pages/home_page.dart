@@ -16,12 +16,12 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Data User")),
-      body: Padding(padding: EdgeInsets.all(20), child: _userContainer()),
+      appBar: AppBar(title: Text("Data Pakaian")),
+      body: Padding(padding: EdgeInsets.all(20), child: _clothesContainer()),
     );
   }
 
-  Widget _userContainer() {
+  Widget _clothesContainer() {
     /*
       FutureBuilder adalah widget yang membantu menangani proses asynchronous
       Proses async adalah proses yang membutuhkan waktu. (ex: mengambil data dari API)
@@ -35,7 +35,7 @@ class _HomePageState extends State<HomePage> {
       Status hasData digunakan untuk mengecek apakah data sudah siap.
     */
     return FutureBuilder(
-      future: ClothingService.getUsers(),
+      future: ClothingService.getClothes(),
       builder: (context, snapshot) {
         // Jika error (gagal memanggil API), maka tampilkan teks error
         if (snapshot.hasError) {
@@ -50,11 +50,11 @@ class _HomePageState extends State<HomePage> {
 
             Untuk memudahkan pengolahan data, 
             kita perlu mengonversi data JSON tersebut ke dalam 
-            model Dart (UsersModel) untuk memudahkan pengolahan data.
+            model Dart (ClothingModel) untuk memudahkan pengolahan data.
             Setelah itu, hasil konversinya disimpan ke dalam variabel bernama "response".
 
             Baris 2:
-            Setelah dikonversi, tampilkan data tadi di widget bernama "_userlist()"
+            Setelah dikonversi, tampilkan data tadi di widget bernama "_clothingList()"
             dengan mengirimkan data tadi sebagai parameternya.
 
             Kenapa yg dikirim "response.data" bukan "response" aja?
@@ -66,10 +66,8 @@ class _HomePageState extends State<HomePage> {
                 {
                   "id": 1,
                   "name": "rafli",
-                  "email": "rafli@gmail.com",
-                  "gender": "Male",
-                  "createdAt": "2025-04-29T13:17:17.000Z",
-                  "updatedAt": "2025-04-29T13:17:17.000Z"
+                  "price": 12000,
+                  ...
                 },
                 ...
               ]
@@ -77,7 +75,7 @@ class _HomePageState extends State<HomePage> {
 
             Nah, kita itu cuman mau ngambil properti "data" doang, 
             kita gamau ngambil properti "status" dan "message",
-            makanya yg kita kirim ke Widget _userlist itu response.data
+            makanya yg kita kirim ke Widget _clothingList itu response.data
           */
           ClothingModel response = ClothingModel.fromJson(snapshot.data!);
           return _clothingList(context, response.data!);
@@ -93,10 +91,10 @@ class _HomePageState extends State<HomePage> {
   Widget _clothingList(BuildContext context, List<Clothing> clothes) {
     return ListView(
       children: [
-        // Tombol create user
+        // Tombol add clothes
         ElevatedButton(
           onPressed: () {
-            // Pindah ke halaman CreateUserPage() (create_user_page.dart)
+            // Pindah ke halaman CreatePage() (create_page.dart)
             Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (BuildContext context) => const CreatePage(),
@@ -107,8 +105,8 @@ class _HomePageState extends State<HomePage> {
         ),
         SizedBox(height: 16),
 
-        // Tampilkan tiap-tiap user dengan melakukan perulangan pada variabel "users".
-        // Simpan data tiap user ke dalam variabel "user" (gapake s)
+        // Tampilkan tiap-tiap data pakaian dengan melakukan perulangan pada variabel "clothes".
+        // Simpan data tiap pakaian ke dalam variabel "clothing"
         for (var clothing in clothes)
           Container(
             margin: EdgeInsets.only(bottom: 14),
@@ -215,23 +213,23 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  // Fungsi untuk menghapus user ketika tombol "Delete User" diklik
+  // Fungsi untuk menghapus data pakaian ketika tombol "Remove" diklik
   void _delete(int id) async {
     try {
       /*
         Lakukan pemanggilan API delete, setelah itu
         simpan ke dalam variabel bernama "response"
       */
-      final response = await ClothingService.deleteUser(id);
+      final response = await ClothingService.deleteClothing(id);
 
       /*
         Jika response status "Success", 
-        maka tampilkan snackbar yg bertuliskan "User Deleted"
+        maka tampilkan snackbar yg bertuliskan "Clothes Removed"
       */
       if (response["status"] == "Success") {
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(SnackBar(content: Text("User Deleted")));
+        ).showSnackBar(SnackBar(content: Text("Clothing Removed")));
 
         // Refresh tampilan (Supaya data yg dihapus ilang dari layar)
         setState(() {});
@@ -241,7 +239,7 @@ class _HomePageState extends State<HomePage> {
       }
     } catch (error) {
       /*
-        Jika user gagal menghapus, 
+        Jika data gagal dihapus, 
         maka tampilkan snackbar dengan tulisan "Gagal: error-nya apa"
       */
       ScaffoldMessenger.of(

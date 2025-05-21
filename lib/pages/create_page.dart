@@ -11,11 +11,7 @@ class CreatePage extends StatefulWidget {
 }
 
 class _CreatePageState extends State<CreatePage> {
-  /* 
-    Controller dipake buat mengelola input teks dari TextField.
-    Di sini kita bikin controller buat input name sama email.
-    Buat input gender, hasilnya cukup kita simpan ke dalam string biasa karena kita make radio button
-  */
+  // Controller dipake buat mengelola input teks dari TextField.
   final name = TextEditingController();
   final price = TextEditingController();
   final category = TextEditingController();
@@ -23,42 +19,128 @@ class _CreatePageState extends State<CreatePage> {
   final sold = TextEditingController();
   final rating = TextEditingController();
   final stock = TextEditingController();
-  final yearReleased = TextEditingController();
   final material = TextEditingController();
+  final yearList = [2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025];
+  int yearReleased = 2018;
 
-  // Fungsi untuk membuat user ketika tombol "Create User" diklik
-  Future<void> _createUser(BuildContext context) async {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text("Add Clothing")),
+      body: Padding(
+        padding: const EdgeInsets.all(20),
+        child: ListView(
+          children: [
+            // Buat input nama pakaian
+            TextField(
+              /*
+                Ngasi tau kalau ini input buat name, jadi segala hal yg kita ketikan 
+                bakalan disimpan ke dalam variabel "name" yg udah kita bikin di atas
+              */
+              controller: name,
+              decoration: const InputDecoration(
+                labelText: "Name", // <- Ngasi label
+              ),
+            ),
+            _textField(price, "Price"),
+            _textField(category, "Category"),
+            _textField(brand, "Brand"),
+            _textField(material, "Material"),
+            _textField(sold, "Sold"),
+            _textField(stock, "Stock"),
+            _textField(rating, "Rating"),
+            const SizedBox(height: 12),
+            const Text("Year Released"),
+            DropdownButton(
+              value: yearReleased,
+              onChanged: (int? value) {
+                setState(() {
+                  yearReleased = value!;
+                });
+              },
+              items:
+                  yearList.map((int value) {
+                    return DropdownMenuItem(
+                      value: value,
+                      child: Text("$value"),
+                    );
+                  }).toList(),
+            ),
+            const SizedBox(height: 16),
+            // Tombol buat submit data baru
+            ElevatedButton(
+              onPressed: () {
+                // Jalankan fungsi _createClothing() ketika tombol diklik
+                _createClothing(context);
+              },
+              child: const Text("Add Clothing"),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _textField(TextEditingController controller, String label) {
+    return TextField(
+      controller: controller,
+      decoration: InputDecoration(
+        labelText: label, // <- Ngasi label
+      ),
+    );
+  }
+
+  // Fungsi untuk menambah data pakaian ketika tombol "Add Clothin" diklik
+  Future<void> _createClothing(BuildContext context) async {
     try {
       /*
-        Karena kita mau membuat user, maka kita juga perlu datanya.
-        Disini kita mengambil data nama, email, & gender yang dah diisi pada form,
-        Terus datanya itu disimpan ke dalam variabel "newUser" dengan tipe data User.
+        Karena kita mau menambahkan data baru, maka kita juga perlu datanya.
+        Disini kita mengambil data-data yang dah diisi pada form,
+        Terus datanya itu disimpan ke dalam variabel "newClothing" dengan tipe data "Clothing".
       */
+      int? priceInt = int.tryParse(price.text.trim());
+      int? soldInt = int.tryParse(sold.text.trim());
+      int? stockInt = int.tryParse(stock.text.trim());
+      double? ratingDouble = double.tryParse(rating.text.trim());
+
+      if (priceInt == null ||
+          soldInt == null ||
+          stockInt == null ||
+          ratingDouble == null) {
+        throw Exception("Input tidak valid.");
+      }
+
       Clothing newClothing = Clothing(
         name: name.text.trim(),
-        price: int.parse(price.text.trim()),
-        // gender: gender,
+        price: priceInt,
+        category: category.text.trim(),
+        brand: brand.text.trim(),
+        material: material.text.trim(),
+        sold: soldInt,
+        stock: stockInt,
+        rating: ratingDouble,
+        yearReleased: yearReleased,
       );
 
       /*
         Lakukan pemanggilan API create, setelah itu
         simpan ke dalam variabel bernama "response"
       */
-      final response = await ClothingService.createUser(newClothing);
+      final response = await ClothingService.addClothing(newClothing);
 
       /*
         Jika response status "Success", 
-        maka tampilkan snackbar yg bertuliskan "Berhasil menambah user baru"
+        maka tampilkan snackbar yg bertuliskan "Clothing Added"
       */
       if (response["status"] == "Success") {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Berhasil menambah data pakaian baru")),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text("Clothing Added")));
 
         // Pindah ke halaman sebelumnya
         Navigator.pop(context);
 
-        // Untuk merefresh tampilan (menampilkan user baru ke dalam daftar)
+        // Untuk merefresh tampilan (menampilkan data baru ke dalam daftar pada hal. utama)
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
             builder: (BuildContext context) => const HomePage(),
@@ -70,56 +152,12 @@ class _CreatePageState extends State<CreatePage> {
       }
     } catch (error) {
       /*
-        Jika user gagal menghapus, 
+        Jika gagal mengirimkan data, 
         maka tampilkan snackbar dengan tulisan "Gagal: error-nya apa"
       */
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text("Gagal: $error")));
     }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text("Create User")),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: ListView(
-          children: [
-            // Buat input nama user
-            TextField(
-              /*
-                Ngasi tau kalau ini input buat name, jadi segala hal yg kita ketikan 
-                bakalan disimpan ke dalam variabel "name" yg udah kita bikin di atas
-              */
-              controller: name,
-              decoration: const InputDecoration(
-                labelText: "Name", // <- Ngasi label
-                border: OutlineInputBorder(), // <- Ngasi border di form-nya
-              ),
-            ),
-            const SizedBox(height: 16), // <- Ngasi jarak antar widget
-            // Buat input email user
-            TextField(
-              controller: price,
-              decoration: const InputDecoration(
-                labelText: "Email", // <- Ngasi label
-                border: OutlineInputBorder(), // <- Ngasi border di form-nya
-              ),
-            ),
-            const SizedBox(height: 16), // <- Ngasi jarak antar widget
-            // Tombol buat submit data baru
-            ElevatedButton(
-              onPressed: () {
-                // Jalankan fungsi _createUser() ketika tombol diklik
-                _createUser(context);
-              },
-              child: const Text("Create User"),
-            ),
-          ],
-        ),
-      ),
-    );
   }
 }

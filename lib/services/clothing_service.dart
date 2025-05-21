@@ -17,7 +17,7 @@ class ClothingService {
   */
 
   // Method buat mengambil seluruh users
-  static Future<Map<String, dynamic>> getUsers() async {
+  static Future<Map<String, dynamic>> getClothes() async {
     // Mengirim GET request ke url, kemudian disimpan ke dalam variabel "response"
     final response = await http.get(Uri.parse(url));
 
@@ -34,7 +34,7 @@ class ClothingService {
   }
 
   // Method buat menambahkan user baru
-  static Future<Map<String, dynamic>> createUser(Clothing newClothing) async {
+  static Future<Map<String, dynamic>> addClothing(Clothing newClothing) async {
     /* 
       Mengirim POST request ke url.
       Ketika kita mengirim POST request, kita membutuhkan request body.
@@ -68,14 +68,14 @@ class ClothingService {
   }
 
   // Method buat mengambil user berdasarkan id
-  static Future<Map<String, dynamic>> getUserById(int id) async {
+  static Future<Map<String, dynamic>> getClothingById(int id) async {
     // Mengirim GET request ke url, kemudian disimpan ke dalam variabel "response"
     final response = await http.get(Uri.parse("$url/$id"));
     return jsonDecode(response.body);
   }
 
   // Method buat mengedit user berdasarkan id
-  static Future<Map<String, dynamic>> updateUser(
+  static Future<Map<String, dynamic>> updateClothing(
     Clothing updatedClothing,
   ) async {
     /* 
@@ -116,7 +116,7 @@ class ClothingService {
   }
 
   // Method buat menghapus user berdasarkan id
-  static Future<Map<String, dynamic>> deleteUser(int id) async {
+  static Future<Map<String, dynamic>> deleteClothing(int id) async {
     // Mengirim DELETE request ke url, kemudian disimpan ke dalam variabel "response"
     final response = await http.delete(Uri.parse("$url/$id"));
 
