@@ -31,17 +31,7 @@ class _CreatePageState extends State<CreatePage> {
         padding: const EdgeInsets.all(20),
         child: ListView(
           children: [
-            // Buat input nama pakaian
-            TextField(
-              /*
-                Ngasi tau kalau ini input buat name, jadi segala hal yg kita ketikan 
-                bakalan disimpan ke dalam variabel "name" yg udah kita bikin di atas
-              */
-              controller: name,
-              decoration: const InputDecoration(
-                labelText: "Name", // <- Ngasi label
-              ),
-            ),
+            _textField(name, "Name"),
             _textField(price, "Price"),
             _textField(category, "Category"),
             _textField(brand, "Brand"),
@@ -93,16 +83,13 @@ class _CreatePageState extends State<CreatePage> {
   // Fungsi untuk menambah data pakaian ketika tombol "Add Clothin" diklik
   Future<void> _createClothing(BuildContext context) async {
     try {
-      /*
-        Karena kita mau menambahkan data baru, maka kita juga perlu datanya.
-        Disini kita mengambil data-data yang dah diisi pada form,
-        Terus datanya itu disimpan ke dalam variabel "newClothing" dengan tipe data "Clothing".
-      */
+      // Ngubah jadi tipe data angka
       int? priceInt = int.tryParse(price.text.trim());
       int? soldInt = int.tryParse(sold.text.trim());
       int? stockInt = int.tryParse(stock.text.trim());
       double? ratingDouble = double.tryParse(rating.text.trim());
 
+      // Ngecek tipe datanya angka atau bukan
       if (priceInt == null ||
           soldInt == null ||
           stockInt == null ||
@@ -110,6 +97,11 @@ class _CreatePageState extends State<CreatePage> {
         throw Exception("Input tidak valid.");
       }
 
+      /*
+        Karena kita mau menambahkan data baru, maka kita juga perlu datanya.
+        Disini kita mengambil data-data yang dah diisi pada form,
+        Terus datanya itu disimpan ke dalam variabel "newClothing" dengan tipe data "Clothing".
+      */
       Clothing newClothing = Clothing(
         name: name.text.trim(),
         price: priceInt,

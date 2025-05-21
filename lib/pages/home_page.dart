@@ -172,25 +172,25 @@ class _HomePageState extends State<HomePage> {
                       spacing: 8, // <- Beri jarak antar widget sebanyak 8dp
                       children: [
                         // Tombol edit
-                        ElevatedButton(
+                        IconButton(
                           onPressed: () {
                             /*
                               Pindah ke halaman EdiPage() (edit_page.dart)
                               Karena kita mau mengubah data yg dipilih berdasarkan id-nya, 
                               maka beri parameter berupa id yg dipilih
                             */
-                            // Navigator.of(context).push(
-                            //   MaterialPageRoute(
-                            //     builder:
-                            //         (BuildContext context) =>
-                            //             EditUserPage(id: clothing.id!),
-                            //   ),
-                            // );
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder:
+                                    (BuildContext context) =>
+                                        EditPage(id: clothing.id!),
+                              ),
+                            );
                           },
-                          child: Text("Edit"),
+                          icon: Icon(Icons.edit),
                         ),
                         // Tombol delete
-                        ElevatedButton(
+                        IconButton(
                           onPressed: () {
                             /*
                               Karena kita mau menghapus berdasarkan id-nya, maka
@@ -199,7 +199,8 @@ class _HomePageState extends State<HomePage> {
                             */
                             _delete(clothing.id!);
                           },
-                          child: Text("Delete"),
+                          color: Colors.red,
+                          icon: Icon(Icons.delete),
                         ),
                         // Tombol detail
                       ],

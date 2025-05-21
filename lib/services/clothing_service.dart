@@ -16,7 +16,7 @@ class ClothingService {
     - Map<String, dynamic>: Return value berupa JSON (key String, value bisa tipe apa saja).
   */
 
-  // Method buat mengambil seluruh users
+  // Method buat mengambil seluruh data pakaian
   static Future<Map<String, dynamic>> getClothes() async {
     // Mengirim GET request ke url, kemudian disimpan ke dalam variabel "response"
     final response = await http.get(Uri.parse(url));
@@ -33,7 +33,7 @@ class ClothingService {
     return jsonDecode(response.body);
   }
 
-  // Method buat menambahkan user baru
+  // Method buat menambahkan produk baru
   static Future<Map<String, dynamic>> addClothing(Clothing newClothing) async {
     /* 
       Mengirim POST request ke url.
@@ -44,7 +44,7 @@ class ClothingService {
       maka pada bagian headers: Content-Type kita isi menjadi "application/json"
 
       Pada bagian request body, kita akan mengisi request body dengan data yang telah diisi tadi.
-      Kita bisa memanfaatkan parameter "User user" untuk mengisinya.
+      Kita bisa memanfaatkan parameter "Clothing newClothing" untuk mengisinya.
       Kita juga perlu mengubahnya ke dalam bentuk JSON supaya bisa dikirimkan ke API.
 
       Terakhir, hasil dari POST request disimpan ke dalam variabel "response"
@@ -67,14 +67,14 @@ class ClothingService {
     return jsonDecode(response.body);
   }
 
-  // Method buat mengambil user berdasarkan id
+  // Method buat mengambil data pakaian secara detail berdasarkan id
   static Future<Map<String, dynamic>> getClothingById(int id) async {
     // Mengirim GET request ke url, kemudian disimpan ke dalam variabel "response"
     final response = await http.get(Uri.parse("$url/$id"));
     return jsonDecode(response.body);
   }
 
-  // Method buat mengedit user berdasarkan id
+  // Method buat mengedit data pakaian berdasarkan id
   static Future<Map<String, dynamic>> updateClothing(
     Clothing updatedClothing,
   ) async {
@@ -87,7 +87,7 @@ class ClothingService {
       maka pada bagian headers: Content-Type kita isi menjadi "application/json"
 
       Pada bagian request body, kita akan mengisi request body dengan data yang kita ubah tadi.
-      Kita bisa memanfaatkan parameter "User user" untuk mengisinya.
+      Kita bisa memanfaatkan parameter "Clothing updatedClothing" untuk mengisinya.
       Kita juga perlu mengubahnya ke dalam bentuk JSON supaya bisa dikirimkan ke API.
       
       Terakhir, hasil dari POST request disimpan ke dalam variabel "response"
@@ -96,11 +96,7 @@ class ClothingService {
     final response = await http.put(
       Uri.parse("$url/${updatedClothing.id}"),
       headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({
-        "name": updatedClothing.name,
-        // "email": updatedClothing.email,
-        // "gender": updatedClothing.gender,
-      }),
+      body: jsonEncode(updatedClothing),
     );
 
     /*
@@ -115,7 +111,7 @@ class ClothingService {
     return jsonDecode(response.body);
   }
 
-  // Method buat menghapus user berdasarkan id
+  // Method buat menghapus data pakaian berdasarkan id
   static Future<Map<String, dynamic>> deleteClothing(int id) async {
     // Mengirim DELETE request ke url, kemudian disimpan ke dalam variabel "response"
     final response = await http.delete(Uri.parse("$url/$id"));
