@@ -17,7 +17,7 @@ class DetailPage extends StatelessWidget {
 
   Widget _userDetail() {
     return FutureBuilder(
-      future: ClothingService.getUserById(id),
+      future: ClothingService.getClothingById(id),
       builder: (context, snapshot) {
         // Jika error (gagal memanggil API), maka tampilkan teks error
         if (snapshot.hasError) {
