@@ -34,7 +34,7 @@ class Clothing {
   String? category;
   String? brand;
   int? sold;
-  int? rating;
+  double? rating;
   int? stock;
   int? yearReleased;
   String? material;
@@ -59,7 +59,11 @@ class Clothing {
     category = json['category'];
     brand = json['brand'];
     sold = json['sold'];
-    rating = json['rating'];
+
+    // Karena data kita ada yang bilangan bulat (cth: 5, 4, dst),
+    // maka kita perlu mengkonversinya terlebih dahulu ke tipe data double
+    rating = json['rating'].toDouble();
+
     stock = json['stock'];
     yearReleased = json['yearReleased'];
     material = json['material'];

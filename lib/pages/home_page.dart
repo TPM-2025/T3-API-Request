@@ -103,89 +103,112 @@ class _HomePageState extends State<HomePage> {
               ),
             );
           },
-          child: Text("Create New User"),
+          child: Text("Add Clothes"),
         ),
+        SizedBox(height: 16),
 
         // Tampilkan tiap-tiap user dengan melakukan perulangan pada variabel "users".
         // Simpan data tiap user ke dalam variabel "user" (gapake s)
         for (var clothing in clothes)
           Container(
-            // Untuk keperluan tampilan doang (opsional)
-            margin: EdgeInsets.only(top: 12), // <- Ngasih margin
-            padding: EdgeInsets.symmetric(
-              horizontal: 12,
-              vertical: 8,
-            ), // <- Ngasih Padding
-            color: Colors.green.shade100, // <- Ngasih warna background ijo
-            // Nampilin datanya dalam bentuk layout kolom (ke bawah)
-            child: Column(
-              // Cross Axis Alignment "Stretch" berfungsi supaya teks menjadi rata kiri
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                // Tampilkan nama, email, gender dalam bentuk teks
-                Text(clothing.name!),
-                Text("${clothing.price!}"),
-                Text(clothing.category!),
-                Text("${clothing.rating!}"),
-                const SizedBox(height: 8), // <- Beri jarak buat tombol di bawah
+            margin: EdgeInsets.only(bottom: 14),
+            child: InkWell(
+              onTap: () {
                 /*
-                  Supaya tombol edit, delete, dan detail itu tidak ke bawah
-                  melainkan menyamping, maka gunakan layout Row
+                  Pindah ke halaman DetailPage() (detail_page.dart)
+                  Karena kita mau menampilkan detail pakaian yg dipilih berdasarkan id-nya, 
+                  maka beri parameter berupa id yg dipilih
                 */
-                Row(
-                  spacing: 8, // <- Beri jarak antar widget sebanyak 8dp
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder:
+                        (BuildContext context) => DetailPage(id: clothing.id!),
+                  ),
+                );
+              },
+              child: Container(
+                // Untuk keperluan tampilan doang (opsional)
+                padding: EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 8,
+                ), // <- Ngasih Padding
+                // Ngasi border
+                decoration: BoxDecoration(
+                  border: Border.all(width: 1.5),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                // Nampilin datanya dalam bentuk layout kolom (ke bawah)
+                child: Column(
+                  // Cross Axis Alignment "Stretch" berfungsi supaya teks menjadi rata kiri
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    // Tombol edit
-                    ElevatedButton(
-                      onPressed: () {
-                        /*
-                          Pindah ke halaman EditUserPage() (edit_user_page.dart)
-                          Karena kita mau mengubah user yg dipilih berdasarkan id-nya, 
-                          maka beri parameter berupa id yg dipilih
-                        */
-                        // Navigator.of(context).push(
-                        //   MaterialPageRoute(
-                        //     builder:
-                        //         (BuildContext context) =>
-                        //             EditUserPage(id: clothing.id!),
-                        //   ),
-                        // );
-                      },
-                      child: Text("Edit"),
+                    // Tampilkan nama, email, gender dalam bentuk teks
+                    Text(
+                      clothing.name!,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                    // Tombol delete
-                    ElevatedButton(
-                      onPressed: () {
-                        /*
-                          Karena kita mau menghapus user berdasarkan id-nya, maka
-                          jalankan fungsi _deleteUser() dengan memberi
-                          parameter berupa id yg dipilih
-                        */
-                        _deleteUser(clothing.id!);
-                      },
-                      child: Text("Delete"),
+                    Text("Rp${clothing.price!},00"),
+                    Text(clothing.category!),
+                    SizedBox(height: 4),
+                    Row(
+                      children: [
+                        Icon(Icons.star, color: Colors.amber),
+                        SizedBox(width: 4),
+                        Text(
+                          "${clothing.rating!}",
+                          style: TextStyle(fontSize: 16),
+                        ),
+                      ],
                     ),
-                    // Tombol detail
-                    ElevatedButton(
-                      onPressed: () {
-                        /*
-                          Pindah ke halaman DetailUserPage() (detail_user_page.dart)
-                          Karena kita mau menampilkan detail user yg dipilih berdasarkan id-nya, 
-                          maka beri parameter berupa id yg dipilih
-                        */
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder:
-                                (BuildContext context) =>
-                                    DetailPage(id: clothing.id!),
-                          ),
-                        );
-                      },
-                      child: Text("Detail"),
+                    const SizedBox(
+                      height: 8,
+                    ), // <- Beri jarak buat tombol di bawah
+                    /*
+                      Supaya tombol edit, delete, dan detail itu tidak ke bawah
+                      melainkan menyamping, maka gunakan layout Row
+                    */
+                    Row(
+                      spacing: 8, // <- Beri jarak antar widget sebanyak 8dp
+                      children: [
+                        // Tombol edit
+                        ElevatedButton(
+                          onPressed: () {
+                            /*
+                              Pindah ke halaman EdiPage() (edit_page.dart)
+                              Karena kita mau mengubah data yg dipilih berdasarkan id-nya, 
+                              maka beri parameter berupa id yg dipilih
+                            */
+                            // Navigator.of(context).push(
+                            //   MaterialPageRoute(
+                            //     builder:
+                            //         (BuildContext context) =>
+                            //             EditUserPage(id: clothing.id!),
+                            //   ),
+                            // );
+                          },
+                          child: Text("Edit"),
+                        ),
+                        // Tombol delete
+                        ElevatedButton(
+                          onPressed: () {
+                            /*
+                              Karena kita mau menghapus berdasarkan id-nya, maka
+                              jalankan fungsi _delete() dengan memberi
+                              parameter berupa id yg dipilih
+                            */
+                            _delete(clothing.id!);
+                          },
+                          child: Text("Delete"),
+                        ),
+                        // Tombol detail
+                      ],
                     ),
                   ],
                 ),
-              ],
+              ),
             ),
           ),
       ],
@@ -193,7 +216,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   // Fungsi untuk menghapus user ketika tombol "Delete User" diklik
-  void _deleteUser(int id) async {
+  void _delete(int id) async {
     try {
       /*
         Lakukan pemanggilan API delete, setelah itu
