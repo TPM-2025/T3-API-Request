@@ -76,7 +76,18 @@ class DetailPage extends StatelessWidget {
       children: [
         Text("Nama: ${clothing.name!}"),
         Text("Kategori: ${clothing.category!}"),
+        Text("Harga: Rp${clothing.price!}"),
         Text("Brand: ${clothing.brand!}"),
+        Text("Stok: ${clothing.stock!}"),
+        Text("Rating: ${clothing.rating!} / 5.0"),
+        Text("Terjual: ${clothing.sold!}"),
+        Text("Bahan: ${clothing.material!}"),
+        Text("Tahun Rilis: ${clothing.yearReleased!}"),
+        SizedBox(height: 12),
+        Text(
+          "ABAIKAN TAMPILAN \nJANGAN DITIRU! \nHANYA UNTUK CONTOH",
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        ),
       ],
     );
   }
